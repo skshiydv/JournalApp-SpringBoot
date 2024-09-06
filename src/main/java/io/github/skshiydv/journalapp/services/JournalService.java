@@ -50,11 +50,11 @@ public class JournalService {
         journalRepository.save(journal);
     }
 
-    public Optional<Journal_entry> getJournalById(ObjectId id) {
+    public Journal_entry getJournalById(ObjectId id) {
         if (journalRepository.existsById(id)) {
-            return journalRepository.findById(id);
+            return journalRepository.findById(id).get();
         }
-        return Optional.empty();
+        return null;
     }
 
 }
