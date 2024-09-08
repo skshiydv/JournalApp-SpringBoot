@@ -18,16 +18,27 @@ import java.util.Optional;
 public class JournalService {
     private final JournalRepository journalRepository;
     private final UserRepository userRepository;
+    private final userService userService;
 
     public List<Journal_entry> getAllJournals() {
         return journalRepository.findAll();
     }
 
-    public void deleteJournalById(ObjectId id, String username) {
-        User user = userRepository.findByUsername(username);
-        user.getJournalEntries().removeIf(entry -> entry.getId().equals(id));
-        userRepository.save(user);
-        journalRepository.deleteById(id);
+    @Transactional public void deleteJournalById(ObjectId id, String username) {
+        try {
+            User user = userRepository.findByUsername(username);
+            boolean removed=user.getJournalEntries().removeIf(entry -> entry.getId().equals(id));
+            if (removed) {
+                userService.save(user);
+                journalRepository.deleteById(id);
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("An error occurred while deleting journal");
+        }
+
+
     }
     @Transactional
     public void addJournal(Journal_entry journal, String userName) {

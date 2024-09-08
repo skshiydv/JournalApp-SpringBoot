@@ -13,8 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -33,12 +32,12 @@ public class JournalEntryController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-        List<Journal_entry> collect=user.getJournalEntries().stream().filter(x -> x.getId().equals(id)).toList();
+        List<Journal_entry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(id)).toList();
         if (!collect.isEmpty()) {
-            Journal_entry entry=journalService.getJournalById(id);
+            Journal_entry entry = journalService.getJournalById(id);
             return new ResponseEntity<>(entry, HttpStatus.OK);
         }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
 
     }
@@ -65,21 +64,30 @@ public class JournalEntryController {
 
     }
 
-    @DeleteMapping("/id/{username}/{id}")
-    public ResponseEntity<String> deleteEntry(@PathVariable ObjectId id, @PathVariable String username) {
-        Journal_entry journal_entry = journalService.getJournalById(id);
-        journalService.deleteJournalById(id, username);
-        return new ResponseEntity<>("Successfully deleted", HttpStatus.NO_CONTENT);
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<String> deleteEntry(@PathVariable ObjectId id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        if (username != null) {
+            Journal_entry journal_entry = journalService.getJournalById(id);
+            if (journal_entry != null) {
+                journalService.deleteJournalById(id, username);
+                return new ResponseEntity<>("Successfully deleted", HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>("Journal entry not found", HttpStatus.NOT_FOUND);
 
+        }
+        return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 
     }
 
     @PutMapping("/id/{id}")
     public ResponseEntity<Journal_entry> updateEntry(@PathVariable ObjectId id, @RequestBody Journal_entry entry) {
         Journal_entry oldEntry = journalService.getJournalById(id);
-        if (oldEntry!=null) {
+        if (oldEntry != null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
+
             oldEntry.setTitle(!entry.getTitle().isEmpty() ? entry.getTitle() : oldEntry.getTitle());
             oldEntry.setContent(entry.getContent() != null && !entry.getContent().isEmpty() ? entry.getContent() : oldEntry.getContent());
             oldEntry.setAuthor(entry.getAuthor() != null && !entry.getAuthor().isEmpty() ? entry.getAuthor() : oldEntry.getAuthor());
