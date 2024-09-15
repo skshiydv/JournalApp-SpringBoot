@@ -22,8 +22,15 @@ public class userService {
         userRepository.save(user);
 
 
-    } public void save(User user) {
-        userRepository.save(user);
+    } public boolean save(User user) {
+        try {
+            userRepository.save(user);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+
 
     }
     public List<User> findAll() {
