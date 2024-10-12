@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private final userService service;
+    private final io.github.skshiydv.journalapp.services.quotesService quotesService;
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
@@ -39,6 +40,11 @@ public class UserController {
         String username = authentication.getName();
         service.deleteByUsername(username);
         return "delete success";
-
+    }
+    @GetMapping
+    public String getUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return "Welcome " + username + "\n" + quotesService.getQuote("happiness").getQuote();
     }
 }

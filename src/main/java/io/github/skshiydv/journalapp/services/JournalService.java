@@ -6,6 +6,8 @@ import io.github.skshiydv.journalapp.repositories.JournalRepository;
 import io.github.skshiydv.journalapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ public class JournalService {
     private final JournalRepository journalRepository;
     private final UserRepository userRepository;
     private final userService userService;
+    private static final Logger logger= LoggerFactory.getLogger(JournalService.class);
 
     public List<Journal_entry> getAllJournals() {
         return journalRepository.findAll();
@@ -34,7 +37,7 @@ public class JournalService {
             }
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             throw new RuntimeException("An error occurred while deleting journal");
         }
 
