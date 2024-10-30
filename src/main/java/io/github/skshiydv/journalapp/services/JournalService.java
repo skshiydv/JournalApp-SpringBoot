@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,8 @@ public class JournalService {
         return journalRepository.findAll();
     }
 
-    @Transactional public void deleteJournalById(ObjectId id, String username) {
+    @Transactional
+    public void deleteJournalById(ObjectId id, String username) {
         try {
             User user = userRepository.findByUsername(username);
             boolean removed=user.getJournalEntries().removeIf(entry -> entry.getId().equals(id));

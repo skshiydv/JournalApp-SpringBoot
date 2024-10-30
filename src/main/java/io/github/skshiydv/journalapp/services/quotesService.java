@@ -1,7 +1,9 @@
 package io.github.skshiydv.journalapp.services;
 
 import io.github.skshiydv.journalapp.ExternalAPI.response;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.github.skshiydv.journalapp.cache.AppCache;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,20 +15,19 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class quotesService {
-   private static final String API_KEY="GQ1XYdJAXpoySgeejQEQig==Y32eFgBNbYiCOqTy";
-   private static final String api_url = "https://api.api-ninjas.com/v1/quotes?category=CATEGORY";
+    @Value("${quotes.api.key}")
+   private String API_KEY;
    private final RestTemplate restTemplate;
-   public quotesService(RestTemplate restTemplate) {
-      this.restTemplate = restTemplate;
-   }
+
+   private final AppCache appCache;
 
    public response getQuote(String category) {
       HttpHeaders headers = new HttpHeaders();
       headers.set("X-Api-Key", API_KEY);
       HttpEntity<String> entity = new HttpEntity<>(headers);
-
-      String API=api_url.replace("CATEGORY", category);
+      String API=appCache.APP_CACHE.get(AppCache.url.QUOTES_URL.toString()).replace("<category>", category);
       ResponseEntity<List<response>> res=restTemplate.exchange(API, HttpMethod.GET, entity, new ParameterizedTypeReference<List<response>>() {});
       List<response> response = res.getBody();
        if(response!=null){
