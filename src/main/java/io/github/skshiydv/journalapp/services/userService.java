@@ -22,7 +22,8 @@ public class userService {
         userRepository.save(user);
 
 
-    } public boolean save(User user) {
+    }
+    public boolean save(User user) {
         try {
             userRepository.save(user);
             return true;

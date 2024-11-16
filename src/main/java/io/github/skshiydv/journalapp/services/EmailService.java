@@ -1,7 +1,7 @@
 package io.github.skshiydv.journalapp.services;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private MailSender mailSender;
+    private final JavaMailSender mailSender;
+
     public void sendEmail(String to, String subject, String body) {
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -19,11 +20,9 @@ public class EmailService {
             mailMessage.setSubject(subject);
             mailMessage.setText(body);
             mailSender.send(mailMessage);
+            log.info("Email sent to {}", to);
+        } catch (Exception e) {
+            log.error("Failed to send email to {}: {}", to, e.getMessage(), e);
         }
-        catch (Exception e) {
-            log.error(e.toString());
-        }
-
     }
-
 }
