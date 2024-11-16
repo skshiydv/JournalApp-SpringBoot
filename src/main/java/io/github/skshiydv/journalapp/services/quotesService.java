@@ -19,7 +19,7 @@ import java.util.List;
 public class quotesService {
     @Value("${quotes.api.key}")
    private String API_KEY;
-   private final RestTemplate restTemplate;
+   private final   RestTemplate restTemplate;
 
    private final AppCache appCache;
 

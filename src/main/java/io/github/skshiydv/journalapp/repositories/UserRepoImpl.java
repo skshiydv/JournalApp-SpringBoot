@@ -5,12 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
+@Component
 @RequiredArgsConstructor
 public class UserRepoImpl {
-
-    private final MongoTemplate mongoTemplate;
+    private  MongoTemplate mongoTemplate;
     public List<User> getUserForSentiment(){
         Query query = new Query();
         query.addCriteria(Criteria.where("email").regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\n"));
