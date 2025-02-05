@@ -52,8 +52,6 @@ public class UserController {
         User user = service.findByUsername(username);
         String email = user.getEmail();
         emailService.sendEmail(email,"Hi its me","HAHAHAH");
-
-
         return "Welcome " + username + "\n" + quotesService.getQuote("happiness").getQuote();
     }
 }
